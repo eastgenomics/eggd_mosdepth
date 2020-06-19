@@ -9,6 +9,7 @@ This app may be executed as a standalone app.
 
 ## What data are required for this app to run?
 This app requires a BAM and corresponding index file, and may also be passed optional arguments as described in the docs: https://github.com/brentp/mosdepth.
+Usage of bed file requires passing the optional bed file input, and optional command line arg "--by /input/*.bed".
 
 ## What does this app output?
 This app outputs:

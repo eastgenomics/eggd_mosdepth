@@ -1,0 +1,86 @@
+{
+  "name": "eggd_mosdepth",
+  "title": "eggd_mosdepth",
+  "summary": "runs mosdepth to perform coverage analysis",
+  "dxapi": "1.0.0",
+  "version": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "prefix",
+      "label": "prefix for naming of output files",
+      "class": "string",
+      "optional": false,
+      "help": ""
+    },
+    {
+      "name": "optional_arguments",
+      "label": "optional args",
+      "class": "string",
+      "optional": true,
+      "help": ""
+    },
+    {
+      "name": "bam",
+      "label": "BAM file",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "index",
+      "label": "Index file",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "bed",
+      "label": "bed file (use with --by)",
+      "class": "file",
+      "optional": true,
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "mosdepth_output",
+      "label": "array of mosdepth output files",
+      "class": "array:file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 1
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/eggd_mosdepth.sh",
+    "version": "1"
+  },
+  "access": {
+    "project": "CONTRIBUTE",
+    "network": ["*"]
+  },
+  "regionalOptions": {
+    "aws:eu-central-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x4"
+        }
+      }
+    }
+  }
+}
