@@ -20,9 +20,11 @@ main() {
     # temp dir for downloaded files
     mkdir ~/input/
 
-    # downloads all input files to /in with individual sub dirs, move all to /temp
+    # downloads all input files to /in with individual sub dirs, move all to /input
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
+
+    echo $optional_arguments
 
     # get conda and build it, required to install mosdepth
     wget -q https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh 
@@ -40,20 +42,10 @@ main() {
 
     conda install mosdepth
 
-    # # temp dir for downloaded files
-    # mkdir ~/temp/
-
-    # dx-download-all-inputs
-
-    # find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/temp
-
-    # dx download "$bam" -o bam
-    # dx download "$index" -o bam.bai
-
+    # run in output directory
     mkdir ~/output && cd ~/output
 
     echo "running mosdepth using:"
-
     echo "mosdepth $optional_arguments $prefix ~/input/*.bam"
 
     # run mosdepth
@@ -63,7 +55,6 @@ main() {
 
     # uploads files and passes dx file-id to dx-jobutil-add-output
     # to add to the mosdepth_output array:file
-
     for file in ./*; 
       do id=$(dx upload $file --brief) && dx-jobutil-add-output --array mosdepth_output "$id"; 
     done
