@@ -13,14 +13,18 @@ main() {
     echo "Using following optional arguments:"
     echo $optional_arguments
 
-    # DNAnexus doesn't seem to handle passing files through optional string well
-    # get full path of bed, then add the full bed path after --by to pass bed
-    bed_path=$(realpath ~/input/*.bed)
+    if [[ $optional_arguments =~ "--by" ]]; then
+      # if bed file is being used
 
-    bed_arg="--by $bed_path"
+      # DNAnexus doesn't seem to handle passing files through optional string well
+      # get full path of bed, then add the full bed path after --by to pass bed
+      bed_path=$(realpath ~/input/*.bed)
 
-    optional_arguments="${optional_arguments/--by/$bed_arg}"
+      bed_arg="--by $bed_path"
 
+      optional_arguments="${optional_arguments/--by/$bed_arg}"
+    fi
+    
     # get conda and build it, required to install mosdepth
     wget -q https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh 
 
