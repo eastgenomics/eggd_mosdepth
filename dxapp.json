@@ -9,7 +9,7 @@
       "name": "prefix",
       "label": "prefix for naming of output files",
       "class": "string",
-      "optional": false,
+      "optional": true,
       "help": ""
     },
     {

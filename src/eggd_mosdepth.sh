@@ -10,6 +10,8 @@ main() {
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
+    filename="${bam_name%%.*}"
+
     echo "Using following optional arguments:"
     echo $optional_arguments
 
@@ -44,12 +46,17 @@ main() {
 
     # run in output directory
     mkdir ~/output && cd ~/output
+    
 
     echo "running mosdepth using:"
-    echo "mosdepth $optional_arguments $prefix ~/input/*.bam"
+    echo $filename
+    echo "mosdepth $optional_arguments $filename ~/input/*.bam"
 
     # run mosdepth
-    mosdepth $optional_arguments $prefix ~/input/*.bam
+    mosdepth $optional_arguments $filename ~/input/*.bam
+
+
+    
     
     echo "app finished, uploading files"
 
