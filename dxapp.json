@@ -1,6 +1,6 @@
 {
-  "name": "eggd_mosdepth_no_pre",
-  "title": "eggd_mosdepth_no_pre",
+  "name": "eggd_mosdepth",
+  "title": "eggd_mosdepth",
   "summary": "runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
   "version": "1.0.0",
