@@ -31,7 +31,7 @@ main() {
           # optional labels passed
           echo "custom labels"
           IFS=',' read -r -a array <<< "$quantize_labels"
-          for i in "${array[@]}"
+          for i in "${!array[@]}"
           # loop over label array, pass label no. and label
           do
               export MOSDEPTH_Q$i="${array[$i]}"
@@ -39,12 +39,16 @@ main() {
     
         else
         # no labels given, use default
-        echo "standard labels"
+        echo "standard labels:"
+        echo "MOSDEPTH_Q0=NO_COVERAGE"
+        echo "MOSDEPTH_Q1=LOW_COVERAGE"
+        echo "MOSDEPTH_Q2=CALLABLE"
+        echo "MOSDEPTH_Q3=HIGH_COVERAGE"
+        
         export MOSDEPTH_Q0=NO_COVERAGE
         export MOSDEPTH_Q1=LOW_COVERAGE
         export MOSDEPTH_Q2=CALLABLE
         export MOSDEPTH_Q3=HIGH_COVERAGE
-
         fi
     fi
     

@@ -12,6 +12,13 @@ This app requires a BAM and corresponding index file, and may also be passed opt
 
 Usage of bed file requires passing the optional bed file argument, to do so please specify "--by" in the optional arguments, there is no need to specify the full bed file name as per the docs.
 
+Usage of the "--quantize" option also has optional labels as an input. By default if none are given and 4 bins are passed, the default labels from the docs are used. For &ne; 4 bins or custom labels, this should be passed as a comma seperated list in "quantize_labels".
+
+e.g. For the following 6 bins: 
+    `--quantize 0:1:4:50:100:200:` <br/>
+    The following label option would be passed: 
+    `"label1,label2,label3,label4,label5,label6"`
+
 ## What does this app output?
 This app outputs:
 - `{prefix}.mosdepth.global.dist.txt`
