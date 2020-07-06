@@ -12,9 +12,6 @@ main() {
 
     filename="${bam_name%%.*}"
 
-    echo "Using following optional arguments:"
-    echo $optional_arguments
-
     if [[ $optional_arguments =~ "--by" ]]; then
       # if bed file is being used
 
@@ -26,7 +23,35 @@ main() {
 
       optional_arguments="${optional_arguments/--by/$bed_arg}"
     fi
+
+    if [[ $optional_arguments =~ "--quantize" ]]; then
+        # if --quantize option given
+        echo "setting labels"
+        if [[ $quantize_labels ]]; then
+          # optional labels passed
+          echo "custom labels"
+          IFS=',' read -r -a array <<< "$quantize_labels"
+          for i in "${array[@]}"
+          # loop over label array, pass label no. and label
+          do
+              export MOSDEPTH_Q$i="${array[$i]}"
+          done
     
+        else
+        # no labels given, use default
+        echo "standard labels"
+        export MOSDEPTH_Q0=NO_COVERAGE
+        export MOSDEPTH_Q1=LOW_COVERAGE
+        export MOSDEPTH_Q2=CALLABLE
+        export MOSDEPTH_Q3=HIGH_COVERAGE
+
+        fi
+    fi
+    
+    echo "Using following optional arguments:"
+    echo $optional_arguments
+    echo $quantize_labels
+
     # get conda and build it, required to install mosdepth
     wget -q https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh 
 

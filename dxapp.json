@@ -6,18 +6,18 @@
   "version": "1.0.0",
   "inputSpec": [
     {
-      "name": "prefix",
-      "label": "prefix for naming of output files",
-      "class": "string",
-      "optional": true,
-      "help": ""
-    },
-    {
       "name": "optional_arguments",
       "label": "optional args",
       "class": "string",
       "optional": true,
       "help": ""
+    },
+    {
+      "name": "quantize_labels",
+      "label": "optional quantize labels",
+      "class": "string",
+      "optional": true,
+      "help": "List of comma seperated labels for bins if using --quantize, number of labels must match number of bins. If none are given the defaults from the readme are passed."
     },
     {
       "name": "bam",
