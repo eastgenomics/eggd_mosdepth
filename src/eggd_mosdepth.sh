@@ -26,10 +26,9 @@ main() {
 
     if [[ $optional_arguments =~ "--quantize" ]]; then
         # if --quantize option given
-        echo "setting labels"
         if [[ $quantize_labels ]]; then
           # optional labels passed
-          echo "custom labels"
+          echo "Using user defined labels"
           IFS=',' read -r -a array <<< "$quantize_labels"
           for i in "${!array[@]}"
           # loop over label array, pass label no. and label
@@ -39,7 +38,7 @@ main() {
     
         else
         # no labels given, use default
-        echo "standard labels:"
+        echo "Using default 4 labels:"
         echo "MOSDEPTH_Q0=NO_COVERAGE"
         echo "MOSDEPTH_Q1=LOW_COVERAGE"
         echo "MOSDEPTH_Q2=CALLABLE"
@@ -76,7 +75,6 @@ main() {
     # run in output directory
     mkdir ~/output && cd ~/output
     
-
     echo "running mosdepth using:"
     echo $filename
     echo "mosdepth $optional_arguments $filename ~/input/*.bam"
@@ -84,9 +82,6 @@ main() {
     # run mosdepth
     mosdepth $optional_arguments $filename ~/input/*.bam
 
-
-    
-    
     echo "app finished, uploading files"
 
     # uploads files and passes dx file-id to dx-jobutil-add-output
