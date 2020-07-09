@@ -10,17 +10,13 @@ main() {
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
-    filename="${bam_name%%.*}"
-
     if [[ $optional_arguments =~ "--by" ]]; then
       # if bed file is being used
 
       # DNAnexus doesn't seem to handle passing files through optional string well
       # get full path of bed, then add the full bed path after --by to pass bed
       bed_path=$(realpath ~/input/*.bed)
-
       bed_arg="--by $bed_path"
-
       optional_arguments="${optional_arguments/--by/$bed_arg}"
     fi
 
@@ -73,22 +69,18 @@ main() {
     conda install mosdepth
 
     # run in output directory
-    mkdir ~/output && cd ~/output
+    mkdir -p ~/out/mosdepth_output && cd ~/out/mosdepth_output
     
-    echo "running mosdepth using:"
-    echo $filename
-    echo "mosdepth $optional_arguments $filename ~/input/*.bam"
+    echo "running mosdepth"
+    echo "mosdepth $optional_arguments $bam_prefix ~/input/*.bam"
 
     # run mosdepth
-    mosdepth $optional_arguments $filename ~/input/*.bam
+    mosdepth $optional_arguments $bam_prefix ~/input/*.bam
 
     echo "app finished, uploading files"
 
-    # uploads files and passes dx file-id to dx-jobutil-add-output
-    # to add to the mosdepth_output array:file
-    for file in ./*; 
-      do id=$(dx upload $file --brief) && dx-jobutil-add-output --array mosdepth_output "$id"; 
-    done
+    # upload output files
+    dx-upload-all-outputs
 
     echo "uploaded"
 }
