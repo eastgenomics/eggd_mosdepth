@@ -10,14 +10,18 @@ main() {
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
-    if [[ $optional_arguments =~ "--by" ]]; then
+    # unzip miniconda installer, has to be zipped as it has syntax errors that
+    # prevent dx build from working
+    gunzip Miniconda2-latest-Linux-x86_64.sh.gz
+
+    if [[ $bed ]]; then
       # if bed file is being used
 
       # DNAnexus doesn't seem to handle passing files through optional string well
       # get full path of bed, then add the full bed path after --by to pass bed
       bed_path=$(realpath ~/input/*.bed)
       bed_arg="--by $bed_path"
-      optional_arguments="${optional_arguments/--by/$bed_arg}"
+      optional_arguments="${optional_arguments} ${bed_arg}"
     fi
 
     if [[ $optional_arguments =~ "--quantize" ]]; then
@@ -51,9 +55,7 @@ main() {
     echo $optional_arguments
     echo $quantize_labels
 
-    # get conda and build it, required to install mosdepth
-    wget -q https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh 
-
+    # build miniconda, required to install mosdepth
     bash ~/Miniconda2-latest-Linux-x86_64.sh -b -p $HOME/miniconda
 
     source ~/miniconda/bin/activate

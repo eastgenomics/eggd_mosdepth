@@ -3,7 +3,9 @@
   "title": "eggd_mosdepth",
   "summary": "runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
-  "version": "1.0.0",
+  "properties": {
+  "github release": "v1.0.0"
+  },
   "inputSpec": [
     {
       "name": "optional_arguments",
@@ -41,7 +43,7 @@
     },
     {
       "name": "bed",
-      "label": "bed file (use with --by)",
+      "label": "bed file",
       "class": "file",
       "optional": true,
       "help": ""
