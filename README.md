@@ -10,7 +10,7 @@ This app may be executed as a standalone app.
 ## What data are required for this app to run?
 This app requires a BAM and corresponding index file, and may also be passed optional arguments as described in the docs: https://github.com/brentp/mosdepth.
 
-Usage of bed file requires passing the optional bed file argument, to do so please specify "--by" in the optional arguments, there is no need to specify the full bed file name as per the docs.
+Usage of bed file does not require passing any additional flags as per the docs, it just requires that the bed file is passed as the bed input.
 
 Usage of the "--quantize" option also has optional labels as an input. By default if none are given and 4 bins are passed, the default labels from the docs are used. For &ne; 4 bins or custom labels, this should be passed as a comma seperated list in "quantize_labels".
 
