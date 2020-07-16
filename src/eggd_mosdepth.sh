@@ -15,10 +15,10 @@ main() {
     gunzip Miniconda2-latest-Linux-x86_64.sh.gz
 
     if [[ $bed ]]; then
-      # if bed file is being used
+      # if bed file is being use
 
       # DNAnexus doesn't seem to handle passing files through optional string well
-      # get full path of bed, then add the full bed path after --by to pass bed
+      # get full path of bed, then add the full bed path after --by to optional args
       bed_path=$(realpath ~/input/*.bed)
       bed_arg="--by $bed_path"
       optional_arguments="${optional_arguments} ${bed_arg}"
