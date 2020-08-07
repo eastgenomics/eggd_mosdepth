@@ -3,16 +3,15 @@
 
 main() {
     
-    # temp dir for downloaded files
-    mkdir ~/input/
+    gunzip mosdepth_container.tar.gz
+
+    # dir for downloaded files
+    mkdir input
+    mkdir out
 
     # downloads all input files to /in with individual sub dirs, move all to /input
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
-
-    # unzip miniconda installer, has to be zipped as it has syntax errors that
-    # prevent dx build from working
-    gunzip Miniconda2-latest-Linux-x86_64.sh.gz
 
     if [[ $bed ]]; then
       # if bed file is being use
@@ -55,29 +54,33 @@ main() {
     echo $optional_arguments
     echo $quantize_labels
 
-    # build miniconda, required to install mosdepth
-    bash ~/Miniconda2-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+    # add dnanexus user to docker group
+    sudo usermod -a -G docker dnanexus
+    newgrp docker
 
-    source ~/miniconda/bin/activate
+    # load local container and run with image id, bind /input & /output dir
+    docker load -i mosdepth_container.tar
+    mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2)
+    docker run -v /home/dnanexus/input:/input -v /home/dnanexus/out:/out $mosdepth_id
 
-    conda init
-
-    source ~/.bashrc
-
-    # add required channels for mosdepth
-    conda config --add channels bioconda
-    conda config --add channels conda-forge
-
-    conda install mosdepth
-
-    # run in output directory
-    mkdir -p ~/out/mosdepth_output && cd ~/out/mosdepth_output
-    
-    echo "running mosdepth"
-    echo "mosdepth $optional_arguments $bam_prefix ~/input/*.bam"
+    cd /out
 
     # run mosdepth
-    mosdepth $optional_arguments $bam_prefix ~/input/*.bam
+    echo "running mosdepth"
+    mosdepth $optional_arguments $bam_prefix /input/*.bam
+    echo "mosdepth completed"
+    
+    exit
+
+    cd ~/out
+
+    # run in output directory
+    #mkdir -p ~/out/mosdepth_output && cd ~/out/mosdepth_output
+    
+    #echo "mosdepth $optional_arguments $bam_prefix /input/*.bam"
+
+    # run mosdepth
+    #mosdepth $optional_arguments $bam_prefix ~/input/*.bam
 
     echo "app finished, uploading files"
 
