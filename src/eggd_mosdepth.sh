@@ -7,14 +7,14 @@ main() {
 
     # dir for downloaded files
     mkdir input
-    mkdir out
+    mkdir -p out/mosdepth_output
 
     # downloads all input files to /in with individual sub dirs, move all to /input
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
     if [[ $bed ]]; then
-      # if bed file is being use
+      # if bed file is being used
 
       # DNAnexus doesn't seem to handle passing files through optional string well
       # get full path of bed, then add the full bed path after --by to optional args
@@ -58,29 +58,18 @@ main() {
     sudo usermod -a -G docker dnanexus
     newgrp docker
 
-    # load local container and run with image id, bind /input & /output dir
+    # load local container & get id
     docker load -i mosdepth_container.tar
     mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2)
-    docker run -v /home/dnanexus/input:/input -v /home/dnanexus/out:/out $mosdepth_id
 
-    cd /out
+    # command to run mosdepth
+    cmd="cd /out/mosdepth_output && mosdepth $optional_arguments $bam_prefix /input/*.bam && ls"
+    echo $cmd
 
-    # run mosdepth
-    echo "running mosdepth"
-    mosdepth $optional_arguments $bam_prefix /input/*.bam
-    echo "mosdepth completed"
-    
-    exit
-
-    cd ~/out
-
-    # run in output directory
-    #mkdir -p ~/out/mosdepth_output && cd ~/out/mosdepth_output
-    
-    #echo "mosdepth $optional_arguments $bam_prefix /input/*.bam"
-
-    # run mosdepth
-    #mosdepth $optional_arguments $bam_prefix ~/input/*.bam
+    # run container with ID and mosdepth cmd
+    docker run -d -v /home/dnanexus/input:/input -v /home/dnanexus/out/:/out $mosdepth_id bash -c $cmd
+        
+    ls out/mosdepth_output
 
     echo "app finished, uploading files"
 
