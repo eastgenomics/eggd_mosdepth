@@ -66,18 +66,15 @@ main() {
     sudo systemctl start docker
 
     # load local container & get id
-    docker load --input mosdepth_container.tar
+    sudo docker load --input mosdepth_container.tar
     mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2) 
 
-    # get full path and name of bam
-    bam='"$(ls ~/input/*.bam)"'
-
     # command to run mosdepth
-    cmd="mosdepth $optional_arguments $bam_prefix $bam"
+    cmd="mosdepth $optional_arguments $bam_prefix ../../input/*bam"
     echo $cmd
 
     # run container with ID and mosdepth cmd
-    docker run -v "/home/dnanexus/input:/input" -v "/home/dnanexus/out/:/out" -w "/out/mosdepth_output" $mosdepth_id /bin/bash -c $cmd
+    sudo docker run -v "/home/dnanexus/input:/input" -v "/home/dnanexus/out/:/out" -w "/out/mosdepth_output" $mosdepth_id /bin/bash -c $cmd
 
     echo "output:"   
     ls out/mosdepth_output
