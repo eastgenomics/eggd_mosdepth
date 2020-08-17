@@ -49,6 +49,11 @@ main() {
         export MOSDEPTH_Q3=HIGH_COVERAGE
         fi
     fi
+
+    # check if set, if not set to empty string
+    if [[ -z $optional_arguments ]]; then
+      optional_arguments=""
+    fi
     
     echo "Using following optional arguments:"
     echo $optional_arguments
@@ -58,23 +63,28 @@ main() {
     sudo usermod -a -G docker dnanexus
     newgrp docker
 
+    sudo systemctl start docker
+
     # load local container & get id
-    docker load -i mosdepth_container.tar
-    mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2)
+    docker load --input mosdepth_container.tar
+    mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2) 
+
+    # get full path and name of bam
+    bam='"$(ls ~/input/*.bam)"'
 
     # command to run mosdepth
-    cmd="cd /out/mosdepth_output && mosdepth $optional_arguments $bam_prefix /input/*.bam && ls"
+    cmd="mosdepth $optional_arguments $bam_prefix $bam"
     echo $cmd
 
     # run container with ID and mosdepth cmd
-    docker run -d -v /home/dnanexus/input:/input -v /home/dnanexus/out/:/out $mosdepth_id bash -c $cmd
-        
+    docker run -v "/home/dnanexus/input:/input" -v "/home/dnanexus/out/:/out" -w "/out/mosdepth_output" $mosdepth_id /bin/bash -c $cmd
+
+    echo "output:"   
     ls out/mosdepth_output
 
     echo "app finished, uploading files"
-
     # upload output files
     dx-upload-all-outputs
-
+    cp this that
     echo "uploaded"
 }
