@@ -17,9 +17,9 @@ Usage of the "--quantize" option also has optional labels as an input. By defaul
 e.g. For the following 6 bins: 
     `--quantize 0:1:4:50:100:200:` <br/>
     The following label option would be passed: 
-    `"label1,label2,label3,label4,label5,label6"`
+    `"label1, label2, label3, label4, label5, label6"`
 
-When calculating coverage to get a more accurate calculation it is required to discount multi mapped reads (those with a MAPQ of 0), and duplicate reads. This may be done by passing the following optional arguments: `--flag 1796 --mapq 20`.
+<b>When calculating coverage to get a more accurate calculation it is required to discount multi mapped reads (those with a MAPQ of 0), and duplicate reads. This may be done by passing the following optional arguments: `--flag 1796 --mapq 20`.<b>
 
 ## What does this app output?
 This app outputs:
