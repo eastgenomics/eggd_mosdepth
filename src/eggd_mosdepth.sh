@@ -18,6 +18,12 @@ main() {
       optional_arguments=""
     fi
 
+    # if flag set add in to optional arguments
+    if [ "$qual_flags" = true ]; then
+      optional_arguments+=" --flag 1796 --mapq 20";
+    fi
+
+
     if [[ $bed ]]; then
       # if bed file is being used
       # specify path of bed in container, then add the full bed path after --by to optional args
@@ -25,6 +31,8 @@ main() {
       bed_arg="--by $bed_path"
       optional_arguments="${optional_arguments} ${bed_arg}"
     fi
+
+    echo $optional_arguments
     
     # add dnanexus user to docker group & start docker daemon
     sudo usermod -a -G docker dnanexus
@@ -34,7 +42,6 @@ main() {
     # load local container & get id
     sudo docker load --input mosdepth_container.tar
     mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2) 
-
 
     if [[ $optional_arguments =~ "--quantize" ]]; then
         # if --quantize option given
