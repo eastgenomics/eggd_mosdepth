@@ -29,7 +29,7 @@
       "patterns": [
         "*.bam$"
       ],
-      "help": ""
+      "help": "BAM file to generate bp coverage on"
     },
     {
       "name": "index",
@@ -39,14 +39,24 @@
       "patterns": [
         "*.bai$"
       ],
-      "help": ""
+      "help": "Index of BAM"
     },
     {
       "name": "bed",
       "label": "bed file",
       "class": "file",
       "optional": true,
-      "help": ""
+      "patterns": [
+        ".bed$"
+      ],
+      "help": "BED file to generate regions.bed"
+    },
+    {
+      "name": "qual_flags",
+      "label": "Quality flags",
+      "class": "boolean",
+      "default": true,
+      "help": "Optional remove duplicate and multi mapped reads using --flag 1796 --mapq 20. Default: True"
     }
   ],
   "outputSpec": [
