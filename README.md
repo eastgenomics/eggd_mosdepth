@@ -3,9 +3,11 @@
 
 ## What does this app do?
 Calculates coverage metrics for a given BAM file.
+<br></br>
 
 ## What are typical use cases for this app?
 This app may be executed as a standalone app.
+<br></br>
 
 ## What data are required for this app to run?
 This app requires a BAM and corresponding index file, and may also be passed optional arguments as described in the docs: https://github.com/brentp/mosdepth.
@@ -19,8 +21,8 @@ e.g. For the following 6 bins:
     The following label option would be passed: 
     `"label1, label2, label3, label4, label5, label6"`
 
-<b>When calculating coverage to get a more accurate calculation it is required to discount multi mapped reads (those with a MAPQ of 0), and duplicate reads. This may be done by passing the following optional arguments: `--flag 1796 --mapq 20`.<b>
-
+<b>When calculating coverage to get a more accurate calculation it is required to discount multi mapped reads (those with a MAPQ of 0), and duplicate reads.  This is done by default with the Quality Flags input parameter, but may be included by setting to False.<b>
+<br></br>
 ## What does this app output?
 This app outputs:
 - `{prefix}.mosdepth.global.dist.txt`
