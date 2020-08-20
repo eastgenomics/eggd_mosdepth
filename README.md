@@ -33,6 +33,7 @@ This app outputs:
 - `{prefix}.regions.bed.gz` (if --by is specified)
 - `{prefix}.quantized.bed.gz` (if --quantize is specified)
 - `{prefix}.thresholds.bed.gz` (if --thresholds is specified)
+- `reference_build.txt`
 
 This is the source code for an app that runs on the DNAnexus Platform.
 For more information about how to run or modify it, see
