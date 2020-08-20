@@ -4,7 +4,7 @@
   "summary": "runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
   "properties": {
-  "github release": "v1.0.0"
+  "githubRelease": "v1.0.0"
   },
   "inputSpec": [
     {
@@ -27,7 +27,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.bam"
+        "*.bam$"
       ],
       "help": ""
     },
@@ -37,7 +37,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.bai"
+        "*.bai$"
       ],
       "help": ""
     },
