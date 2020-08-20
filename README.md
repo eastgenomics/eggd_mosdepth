@@ -21,8 +21,9 @@ e.g. For the following 6 bins:
     The following label option would be passed: 
     `"label1, label2, label3, label4, label5, label6"`
 
-<b>When calculating coverage to get a more accurate calculation it is required to discount multi mapped reads (those with a MAPQ of 0), and duplicate reads.  This is done by default with the Quality Flags input parameter, but may be included by setting to False.<b>
+<b>When calculating coverage to get a more accurate calculation it is required to discount multi mapped reads (those with a MAPQ of 0), and duplicate reads.  This is done by default with the Quality Flags input parameter, but may be included by setting to False.</b>
 <br></br>
+
 ## What does this app output?
 This app outputs:
 - `{prefix}.mosdepth.global.dist.txt`
