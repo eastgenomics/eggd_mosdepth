@@ -1,0 +1,98 @@
+{
+  "name": "eggd_mosdepth",
+  "title": "eggd_mosdepth",
+  "summary": "runs mosdepth to perform coverage analysis",
+  "dxapi": "1.0.0",
+  "properties": {
+  "githubRelease": "v1.0.0"
+  },
+  "inputSpec": [
+    {
+      "name": "optional_arguments",
+      "label": "optional args",
+      "class": "string",
+      "optional": true,
+      "help": ""
+    },
+    {
+      "name": "quantize_labels",
+      "label": "optional quantize labels",
+      "class": "string",
+      "optional": true,
+      "help": "List of comma seperated labels for bins if using --quantize, number of labels must match number of bins. If none are given the defaults from the readme are passed."
+    },
+    {
+      "name": "bam",
+      "label": "BAM file",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bam$"
+      ],
+      "help": "BAM file to generate bp coverage on"
+    },
+    {
+      "name": "index",
+      "label": "Index file",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bai$"
+      ],
+      "help": "Index of BAM"
+    },
+    {
+      "name": "bed",
+      "label": "bed file",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        ".bed$"
+      ],
+      "help": "BED file to generate regions.bed"
+    },
+    {
+      "name": "qual_flags",
+      "label": "Quality flags",
+      "class": "boolean",
+      "default": true,
+      "help": "Optional remove duplicate and multi mapped reads using --flag 1796 --mapq 20. Default: True"
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "mosdepth_output",
+      "label": "array of mosdepth output files",
+      "class": "array:file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 1
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/eggd_mosdepth.sh",
+    "version": "1"
+  },
+  "access": {
+    "project": "CONTRIBUTE",
+    "network": ["*"]
+  },
+  "regionalOptions": {
+    "aws:eu-central-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x4"
+        }
+      }
+    }
+  }
+}
