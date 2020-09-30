@@ -24,7 +24,7 @@ main() {
 
     # get reference build used for mapping from bam
     ref=$(samtools view -H input/$bam_prefix.bam | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
-    echo $ref >> out/mosdepth_output/reference_build.txt
+    echo $ref >> out/mosdepth_output/$bam_prefix.reference_build.txt
 
     # check if set, if not set to empty string
     if [[ -z $optional_arguments ]]; then
