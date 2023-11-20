@@ -112,6 +112,8 @@
     "project": "CONTRIBUTE",
     "network": ["*"]
   },
+  "developers": ["org-emee_1"],
+  "authorizedUsers": ["org-emee_1"],
   "regionalOptions": {
     "aws:eu-central-1": {
       "systemRequirements": {
