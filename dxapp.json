@@ -1,10 +1,10 @@
 {
-  "name": "eggd_mosdepth_v1.0.1",
-  "title": "eggd_mosdepth_v1.0.1",
+  "name": "eggd_mosdepth_v1.1.0",
+  "title": "eggd_mosdepth_v1.1.0",
   "summary": "Runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
   "properties": {
-  "githubRelease": "v1.0.1"
+  "githubRelease": "v1.1.0"
   },
   "inputSpec": [
     {
@@ -57,6 +57,20 @@
       "class": "boolean",
       "default": true,
       "help": "Optional remove duplicate and multi mapped reads using --flag 1796 --mapq 20. Default: True"
+    },
+    {
+      "name": "mosdepth_docker",
+      "label": "Mosdepth Docker",
+      "help": "compressed image of Mosdepth Docker container",
+      "optional": false,
+      "class": "file",
+      "patterns": ["*.tar.gz"],
+      "suggestions": [
+        {
+          "project": "project-GbJVxz84pgppg569237Gq6JP",
+          "path": "/assets"
+        }
+      ]
     }
   ],
   "outputSpec": [
@@ -76,11 +90,22 @@
         "hours": 1
       }
     },
+    "assetDepends": [
+      {
+          "id": "record-Gb95XXQ4021Q7GXXzF33K6k9"
+      },
+      {
+          "name": "samtools_asset",
+          "version": "1.0.0",
+          "project": "project-Gb905Q84fv2pQ7PbfVXB2ZKv",
+          "folder": "/samtools_asset"
+      }
+    ],
     "interpreter": "bash",
-    "release": "16.04",
+    "release": "20.04",
     "distribution": "Ubuntu",
     "file": "src/eggd_mosdepth.sh",
-    "version": "1"
+    "version": "0"
   },
   "access": {
     "project": "CONTRIBUTE",
