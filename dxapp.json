@@ -2,7 +2,7 @@
   "name": "eggd_mosdepth",
   "title": "eggd_mosdepth_v1.1.0",
   "version": "1.1.0",
-  "whatsNew": "* v1.1.0 Updated samtools version to 1.18, Updated name, instance type and ubuntu release.",
+  "whatsNew": "* v1.1.0 Uses samtools v1.18 as an asset and mosdepth docker as an input, updated app name and runSpec.",
   "summary": "Runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
   "properties": {
@@ -14,7 +14,7 @@
       "label": "optional args",
       "class": "string",
       "optional": true,
-      "help": ""
+      "help": "optional arguments as described in the docs: https://github.com/brentp/mosdepth."
     },
     {
       "name": "quantize_labels",
@@ -63,7 +63,7 @@
     {
       "name": "mosdepth_docker",
       "label": "Mosdepth Docker",
-      "help": "compressed image of Mosdepth Docker container",
+      "help": "compressed image of Mosdepth Docker",
       "optional": false,
       "class": "file",
       "patterns": ["*.tar.gz"],
