@@ -69,8 +69,8 @@
       "patterns": ["*.tar.gz"],
       "suggestions": [
         {
-          "project": "project-GbJVxz84pgppg569237Gq6JP",
-          "path": "/assets"
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/assets/mosdepth/"
         }
       ]
     }
@@ -99,8 +99,8 @@
       {
           "name": "samtools_asset",
           "version": "1.0.0",
-          "project": "project-Gb905Q84fv2pQ7PbfVXB2ZKv",
-          "folder": "/samtools_asset"
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "folder": "/app_assets/samtools/samtools_v1.18/"
       }
     ],
     "interpreter": "bash",
