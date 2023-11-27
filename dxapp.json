@@ -1,10 +1,12 @@
 {
-  "name": "eggd_mosdepth_v1.0.1",
-  "title": "eggd_mosdepth_v1.0.1",
+  "name": "eggd_mosdepth",
+  "title": "eggd_mosdepth_v1.1.0",
+  "version": "1.1.0",
+  "whatsNew": "* v1.1.0 Uses samtools v1.18 as an asset and mosdepth docker as an input, updated app name and runSpec.",
   "summary": "Runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
   "properties": {
-  "githubRelease": "v1.0.1"
+  "githubRelease": "v1.1.0"
   },
   "inputSpec": [
     {
@@ -12,7 +14,7 @@
       "label": "optional args",
       "class": "string",
       "optional": true,
-      "help": ""
+      "help": "optional arguments as described in the docs: https://github.com/brentp/mosdepth."
     },
     {
       "name": "quantize_labels",
@@ -57,6 +59,20 @@
       "class": "boolean",
       "default": true,
       "help": "Optional remove duplicate and multi mapped reads using --flag 1796 --mapq 20. Default: True"
+    },
+    {
+      "name": "mosdepth_docker",
+      "label": "Mosdepth Docker",
+      "help": "compressed image of Mosdepth Docker",
+      "optional": false,
+      "class": "file",
+      "patterns": ["*.tar.gz"],
+      "suggestions": [
+        {
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "path": "/assets/mosdepth/"
+        }
+      ]
     }
   ],
   "outputSpec": [
@@ -76,16 +92,29 @@
         "hours": 1
       }
     },
+    "assetDepends": [
+      {
+          "id": "record-Gb95XXQ4021Q7GXXzF33K6k9"
+      },
+      {
+          "name": "samtools_asset",
+          "version": "1.0.0",
+          "project": "project-Fkb6Gkj433GVVvj73J7x8KbV",
+          "folder": "/app_assets/samtools/samtools_v1.18/"
+      }
+    ],
     "interpreter": "bash",
-    "release": "16.04",
+    "release": "20.04",
     "distribution": "Ubuntu",
     "file": "src/eggd_mosdepth.sh",
-    "version": "1"
+    "version": "0"
   },
   "access": {
     "project": "CONTRIBUTE",
     "network": ["*"]
   },
+  "developers": ["org-emee_1"],
+  "authorizedUsers": ["org-emee_1"],
   "regionalOptions": {
     "aws:eu-central-1": {
       "systemRequirements": {

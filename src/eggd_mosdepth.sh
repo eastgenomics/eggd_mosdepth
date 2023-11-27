@@ -1,9 +1,7 @@
 #!/bin/bash
-# eggd_mosdepth 1.0.0
+# eggd_mosdepth 1.1.0
 
 main() {
-    
-    gunzip mosdepth_container.tar.gz
 
     # dir for downloaded files
     mkdir input
@@ -13,15 +11,7 @@ main() {
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
-    # build samtools
-    tar -jxvf samtools-1.7.tar.bz2
-    cd samtools-1.7
-    ./configure --prefix=/packages
-    make
-    make install
-    export PATH=/packages/bin:$PATH
-    cd
-
+    
     # get reference build used for mapping from bam
     ref=$(samtools view -H input/$bam_prefix.bam | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
     echo $ref >> out/mosdepth_output/$bam_prefix.reference_build.txt
@@ -53,7 +43,8 @@ main() {
     sudo systemctl start docker
 
     # load local container & get id
-    sudo docker load --input mosdepth_container.tar
+    gunzip ~/input/$mosdepth_docker_prefix.tar.gz
+    sudo docker load --input ~/input/$mosdepth_docker_prefix.tar
     mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2) 
 
     if [[ $optional_arguments =~ "--quantize" ]]; then
