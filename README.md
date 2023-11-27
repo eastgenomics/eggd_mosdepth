@@ -44,7 +44,7 @@ This app outputs:
 dx run eggd_mosdepth \
 -ibam=file-xxxx \
 -iindex=file-xxxx  \
--imosdepth_docker=file-xxxx \
+-imosdepth_docker=file-xxxx
 ```
 
 This is the source code for an app that runs on the DNAnexus Platform.
