@@ -11,9 +11,8 @@ main() {
     dx-download-all-inputs
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
-    
     # get reference build used for mapping from bam
-    ref=$(samtools view -H input/$bam_prefix.bam | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
+    ref=$(samtools view -H input/$bam_prefix*.*am | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
     echo $ref >> out/mosdepth_output/$bam_prefix.reference_build.txt
 
     # check if set, if not set to empty string
@@ -23,7 +22,7 @@ main() {
 
     # if flag set add in to optional arguments
     if [ "$qual_flags" = true ]; then
-      optional_arguments+=" --flag 1796 --mapq 20";
+      optional_arguments=" --flag 1796 --mapq 20 ${optional_arguments}";
     fi
 
 
@@ -35,8 +34,6 @@ main() {
       optional_arguments="${optional_arguments} ${bed_arg}"
     fi
 
-    echo $optional_arguments
-    
     # add dnanexus user to docker group & start docker daemon
     sudo usermod -a -G docker dnanexus
     newgrp docker
@@ -82,6 +79,23 @@ main() {
          export MOSDEPTH_Q3=HIGH_COVERAGE;
          mosdepth $optional_arguments $bam_prefix '/data/input/$bam_prefix.bam'"
         fi
+    elif [[ $optional_arguments =~ "--fasta" ]]; then
+    echo "Using option argument --fasta, this is necessary when using CRAM files"
+    optional_arguments="--flag 1796 --mapq 20"
+    echo $optional_arguments
+    gunzip input/${reference_fasta_prefix}.fa.gz
+    ls input/
+    cram_file="/data/input/$bam_prefix.cram"
+
+    sudo docker run -v `pwd`:/data \
+          --env optional_arguments="$optional_arguments" \
+          --env bam_prefix="$bam_prefix" --env bam_file="$cram_file" \
+          --env REF_PATH="/data/input/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18_noChr.fa" \
+          --env fasta="--fasta /data/input/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18_noChr.fa" \
+          -w "/data/out/mosdepth_output" \
+          $mosdepth_id /bin/bash -c \
+          'mosdepth $optional_arguments $fasta $bam_prefix $bam_file'
+
     else
     # not using quantize option, run mosdepth normally with container
     sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id mosdepth $optional_arguments $bam_prefix "/data/input/$bam_prefix.bam"

@@ -1,12 +1,12 @@
 {
   "name": "eggd_mosdepth",
-  "title": "eggd_mosdepth_v1.1.0",
-  "version": "1.1.0",
-  "whatsNew": "* v1.1.0 Uses samtools v1.18 as an asset and mosdepth docker as an input, updated app name and runSpec.",
+  "title": "eggd_mosdepth_v1.2.0",
+  "version": "1.2.0",
+  "whatsNew": "* v1.2.0 updated to use CRAM",
   "summary": "Runs mosdepth to perform coverage analysis",
   "dxapi": "1.0.0",
   "properties": {
-  "githubRelease": "v1.1.0"
+  "githubRelease": "v1.2.0"
   },
   "inputSpec": [
     {
@@ -29,9 +29,29 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.bam$"
+        "*.bam$", "*.cram$"
       ],
       "help": "BAM file to generate bp coverage on"
+    },
+    {
+      "name": "reference_fasta",
+      "label": "fasta file",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        "*.fa.gz"
+      ],
+      "help": "reference file to align CRAM file to"
+    },
+    {
+      "name": "reference_fasta_index",
+      "label": "fasta index file",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        "*.fa.fai"
+      ],
+      "help": "Index reference file to align CRAM file to"
     },
     {
       "name": "index",
@@ -39,7 +59,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.bai$"
+        "*.bai$", "*crai$"
       ],
       "help": "Index of BAM"
     },
