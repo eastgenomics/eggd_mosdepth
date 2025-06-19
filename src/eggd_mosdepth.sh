@@ -81,17 +81,20 @@ main() {
         fi
     elif [[ $optional_arguments =~ "--fasta" ]]; then
     echo "Using option argument --fasta, this is necessary when using CRAM files"
-    optional_arguments="--flag 1796 --mapq 20"
+    # remove --fasta from optional arguments to include with fasta
+    optional_arguments=${optional_arguments//"--fasta"/}
     echo $optional_arguments
+
+    # unzip reference 
     gunzip input/${reference_fasta_prefix}.fa.gz
-    ls input/
+    # set paths to inputs for Docker
     cram_file="/data/input/$bam_prefix.cram"
+    fasta_file="/data/input/$reference_fasta_prefix.fa"
 
     sudo docker run -v `pwd`:/data \
           --env optional_arguments="$optional_arguments" \
           --env bam_prefix="$bam_prefix" --env bam_file="$cram_file" \
-          --env REF_PATH="/data/input/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18_noChr.fa" \
-          --env fasta="--fasta /data/input/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18_noChr.fa" \
+          --env fasta="--fasta $fasta_file" \
           -w "/data/out/mosdepth_output" \
           $mosdepth_id /bin/bash -c \
           'mosdepth $optional_arguments $fasta $bam_prefix $bam_file'
