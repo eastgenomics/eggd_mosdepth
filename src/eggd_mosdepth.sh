@@ -15,6 +15,10 @@ main() {
     ref=$(samtools view -H input/$bam_prefix*.*am | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
     echo $ref >> out/mosdepth_output/$bam_prefix.reference_build.txt
 
+    # set up reference fasta
+    gunzip input/${reference_fasta_prefix}.fa.gz
+    fasta="--fasta /data/input/$reference_fasta_prefix.fa"
+
     # check if set, if not set to empty string
     if [[ -z $optional_arguments ]]; then
       optional_arguments=""
@@ -45,7 +49,11 @@ main() {
     mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2) 
 
     if [[ $optional_arguments =~ "--quantize" ]]; then
+        
         # if --quantize option given
+        # set bam path variable to pass
+        bam_file=$(find input/$bam_prefix.*am)
+
         if [[ $quantize_labels ]]; then
           # optional labels passed
           echo "using specified labels"
@@ -54,58 +62,42 @@ main() {
           # build string of labels from array in format for mosdepth
           IFS=", " read -r -a array <<< $quantize_labels
           labels=""
-          for i in "${!array[@]}"; do 
+          for i in "${!array[@]}"; do
             labels+=MOSDEPTH_Q$i="${array[$i]}" && labels+=" ";
           done
-
-          # set bam path variable to pass
-          bam_file="/data/input/$bam_prefix.bam"
 
           # pass env variables to container, loop to export labels to container env varibales
           # then run mosdepth
           sudo docker run -v `pwd`:/data \
           --env labels="$labels" --env optional_arguments="$optional_arguments" \
-          --env bam_prefix="$bam_prefix" --env bam_file="$bam_file" \
+          --env bam_prefix="$bam_prefix" --env bam_file="/data/$bam_file" \
+          --env fasta="$fasta" \
           -w "/data/out/mosdepth_output" \
           $mosdepth_id /bin/bash -c \
-          'for label in $labels; do export $label; done; mosdepth $optional_arguments $bam_prefix $bam_file'  
+          'for label in $labels; do export $label; done; mosdepth $optional_arguments $fasta $bam_prefix $bam_file'
         else
-
         # no labels given, use default
+        echo $bam_file
         sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id /bin/bash -c \
-        "export MOSDEPTH_Q0=NO_COVERAGE; 
+        "export MOSDEPTH_Q0=NO_COVERAGE;
          export MOSDEPTH_Q1=LOW_COVERAGE;
          export MOSDEPTH_Q2=CALLABLE;
          export MOSDEPTH_Q3=HIGH_COVERAGE;
-         mosdepth $optional_arguments $bam_prefix '/data/input/$bam_prefix.bam'"
+         mosdepth $optional_arguments $fasta $bam_prefix '/data/$bam_file'"
         fi
-    elif [[ $optional_arguments =~ "--fasta" ]]; then
-    echo "Using option argument --fasta, this is necessary when using CRAM files"
-    # remove --fasta from optional arguments to include with fasta
-    optional_arguments=${optional_arguments//"--fasta"/}
-    echo $optional_arguments
-
-    # unzip reference 
-    gunzip input/${reference_fasta_prefix}.fa.gz
-    # set paths to inputs for Docker
-    cram_file="/data/input/$bam_prefix.cram"
-    fasta_file="/data/input/$reference_fasta_prefix.fa"
-
-    sudo docker run -v `pwd`:/data \
-          --env optional_arguments="$optional_arguments" \
-          --env bam_prefix="$bam_prefix" --env bam_file="$cram_file" \
-          --env fasta="--fasta $fasta_file" \
-          -w "/data/out/mosdepth_output" \
-          $mosdepth_id /bin/bash -c \
-          'mosdepth $optional_arguments $fasta $bam_prefix $bam_file'
 
     else
     # not using quantize option, run mosdepth normally with container
-    sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id mosdepth $optional_arguments $bam_prefix "/data/input/$bam_prefix.bam"
+
+    # set paths to inputs for Docker
+    bam_file=$(find input/$bam_prefix.*am)
+    echo $bam_file
+
+    sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id mosdepth $optional_arguments $fasta $bam_prefix /data/$bam_file
     fi
 
     echo "app finished, uploading files"
-    
+
     # upload output files
     dx-upload-all-outputs
 
