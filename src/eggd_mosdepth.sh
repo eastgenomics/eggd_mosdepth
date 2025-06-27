@@ -12,8 +12,8 @@ main() {
     find ~/in -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/input
 
     # get reference build used for mapping from bam
-    ref=$(samtools view -H input/$bam_prefix*.*am | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
-    echo $ref >> out/mosdepth_output/$bam_prefix.reference_build.txt
+    ref=$(samtools view -H input/$alignment_file_prefix*.*am | grep @SQ | tail -1 | cut -d$'\t' -f2 | cut -d':' -f2)
+    echo $ref >> out/mosdepth_output/$alignment_file_prefix.reference_build.txt
 
     # set up reference fasta
     gunzip input/${reference_fasta_prefix}.fa.gz
@@ -26,7 +26,7 @@ main() {
 
     # if flag set add in to optional arguments
     if [ "$qual_flags" = true ]; then
-      optional_arguments=" --flag 1796 --mapq 20 ${optional_arguments}";
+      optional_arguments+=" --flag 1796 --mapq 20";
     fi
 
 
@@ -52,7 +52,7 @@ main() {
         
         # if --quantize option given
         # set bam path variable to pass
-        bam_file=$(find input/$bam_prefix.*am)
+        input_alignment_file=$(find input/$alignment_file_prefix.*am)
 
         if [[ $quantize_labels ]]; then
           # optional labels passed
@@ -70,30 +70,30 @@ main() {
           # then run mosdepth
           sudo docker run -v `pwd`:/data \
           --env labels="$labels" --env optional_arguments="$optional_arguments" \
-          --env bam_prefix="$bam_prefix" --env bam_file="/data/$bam_file" \
+          --env input_prefix="$alignment_file_prefix" --env input_alignment_file="/data/$input_alignment_file" \
           --env fasta="$fasta" \
           -w "/data/out/mosdepth_output" \
           $mosdepth_id /bin/bash -c \
-          'for label in $labels; do export $label; done; mosdepth $optional_arguments $fasta $bam_prefix $bam_file'
+          'for label in $labels; do export $label; done; mosdepth $optional_arguments $fasta $input_prefix $input_alignment_file'
         else
         # no labels given, use default
-        echo $bam_file
+        echo $input_alignment_file
         sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id /bin/bash -c \
         "export MOSDEPTH_Q0=NO_COVERAGE;
          export MOSDEPTH_Q1=LOW_COVERAGE;
          export MOSDEPTH_Q2=CALLABLE;
          export MOSDEPTH_Q3=HIGH_COVERAGE;
-         mosdepth $optional_arguments $fasta $bam_prefix '/data/$bam_file'"
+         mosdepth $optional_arguments $fasta $alignment_file_prefix '/data/$input_alignment_file'"
         fi
 
     else
     # not using quantize option, run mosdepth normally with container
 
     # set paths to inputs for Docker
-    bam_file=$(find input/$bam_prefix.*am)
-    echo $bam_file
+    input_alignment_file=$(find input/$alignment_file.*am)
+    echo $input_alignment_file
 
-    sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id mosdepth $optional_arguments $fasta $bam_prefix /data/$bam_file
+    sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id mosdepth $optional_arguments $fasta $alignment_file_prefix /data/$input_alignment_file
     fi
 
     echo "app finished, uploading files"
