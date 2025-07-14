@@ -16,8 +16,12 @@ main() {
     echo $ref >> out/mosdepth_output/$alignment_file_prefix.reference_build.txt
 
     # set up reference fasta
-    gunzip input/${reference_fasta_prefix}.fa.gz
-    fasta="--fasta /data/input/$reference_fasta_prefix.fa"
+    if [[ -n "${reference_fasta_prefix}" ]]; then
+      gunzip "input/${reference_fasta_prefix}.fa.gz"
+      fasta="--fasta /data/input/${reference_fasta_prefix}.fa"
+    else
+      fasta=""
+    fi
 
     # check if set, if not set to empty string
     if [[ -z $optional_arguments ]]; then
@@ -49,10 +53,10 @@ main() {
     mosdepth_id=$(docker images --format="{{.Repository}} {{.ID}}" | grep "^quay.io" | cut -d' ' -f2) 
 
     if [[ $optional_arguments =~ "--quantize" ]]; then
-        
+
         # if --quantize option given
         # set bam path variable to pass
-        input_alignment_file=$(find input/$alignment_file_prefix.*am)
+        input_alignment_file=$(find input -maxdepth 1 -type f -name "${alignment_file_prefix}.*am" | head -n 1)
 
         if [[ $quantize_labels ]]; then
           # optional labels passed
@@ -90,7 +94,8 @@ main() {
     # not using quantize option, run mosdepth normally with container
 
     # set paths to inputs for Docker
-    input_alignment_file=$(find input/$alignment_file.*am)
+    input_alignment_file=$(find input -maxdepth 1 -type f -name "${alignment_file_prefix}.*am" | head -n 1)
+
     echo $input_alignment_file
 
     sudo docker run -v `pwd`:/data -w "/data/out/mosdepth_output" $mosdepth_id mosdepth $optional_arguments $fasta $alignment_file_prefix /data/$input_alignment_file
